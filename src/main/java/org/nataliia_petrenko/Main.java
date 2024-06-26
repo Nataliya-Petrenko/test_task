@@ -16,6 +16,7 @@ package org.nataliia_petrenko;
 public class Main {
     public static void main(String[] args) {
         System.out.println(maxValue(-5, 6));
+        System.out.println(minValue(-5, 6));
     }
 
     public static int maxValue(final int first, final int second) {
@@ -23,6 +24,14 @@ public class Main {
             return first;
         } else {
             return second;
+        }
+    }
+
+    public static int minValue(final int first, final int second) {
+        if (first >= second) {
+            return second;
+        } else {
+            return first;
         }
     }
 }
