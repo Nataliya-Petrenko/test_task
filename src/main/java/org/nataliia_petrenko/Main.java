@@ -34,4 +34,19 @@ public class Main {
             return first;
         }
     }
+
+    public static int median(final int... array) { // todo Should it be double for a situation like: 2+3 = 2.5?
+        int length = array.length;
+        if (length == 0) {
+            throw new IllegalArgumentException("An empty array has no median");
+        }
+        if (length == 1) {
+            return array[0];
+        }
+        if (length % 2 == 0) {
+            return (array[length / 2 - 1] + array[length / 2]) / 2;
+        } else {
+            return array[length / 2];
+        }
+    }
 }

@@ -22,4 +22,25 @@ public class MainTest {
         final int expected = 5;
         Assert.assertEquals(Main.minValue(first, second), expected);
     }
+
+    @Test
+    public void median_oneElement() {
+        final int[] array = {0};
+        final int expected = 0;
+        Assert.assertEquals(Main.median(array), expected);
+    }
+
+    @Test
+    public void median_even() {
+        final int[] array = {0, 5, 3, 4};
+        final int expected = 4;
+        Assert.assertEquals(Main.median(array), expected);
+    }
+
+    @Test
+    public void median_odd() {
+        final int[] array = {0, 5, 3};
+        final int expected = 5;
+        Assert.assertEquals(Main.median(array), expected);
+    }
 }
