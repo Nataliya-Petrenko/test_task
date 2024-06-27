@@ -13,6 +13,8 @@
 
 package org.nataliia_petrenko;
 
+import java.util.PriorityQueue;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println(maxValue(-5, 6));
@@ -35,18 +37,27 @@ public class Main {
         }
     }
 
-    public static int median(final int... array) { // todo Should it be double for a situation like: 2+3 = 2.5?
-        int length = array.length;
-        if (length == 0) {
-            throw new IllegalArgumentException("An empty array has no median");
+    public static void streamMed(int array[]) {
+        int n = array.length;
+        // Declaring two min heap
+        PriorityQueue<Double> greaterValues = new PriorityQueue<>();
+        PriorityQueue<Double> smallerValues = new PriorityQueue<>();
+        for (int i = 0; i < n; i++) {
+
+            // Negation for treating it as max heap
+            smallerValues.add(-1.0 * array[i]); // Negate array[i] and add to s to simulate max-heap behavior.
+            greaterValues.add(-1.0 * smallerValues.poll()); // Move the largest element
+            // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
+            if (greaterValues.size() > smallerValues.size()) // Balance the heaps:
+                // if g has more elements than s, move the smallest element from g back to s.
+                smallerValues.add(-1.0 * greaterValues.poll());
+
         }
-        if (length == 1) {
-            return array[0];
-        }
-        if (length % 2 == 0) {
-            return (array[length / 2 - 1] + array[length / 2]) / 2;
-        } else {
-            return array[length / 2];
-        }
+
+        if (greaterValues.size() != smallerValues.size())
+            System.out.println(-1.0 * smallerValues.peek());
+        else
+            System.out.println((greaterValues.peek() - smallerValues.peek()) / 2);
+
     }
 }
