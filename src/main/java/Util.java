@@ -11,15 +11,13 @@
 час не більше ніж за 40 секунд
  */
 
-package org.nataliia_petrenko;
-
 import java.util.PriorityQueue;
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println(maxValue(-5, 6));
-        System.out.println(minValue(-5, 6));
-    }
+public class Util {
+//    public static void main(String[] args) {
+//        System.out.println(maxValue(-5, 6));
+//        System.out.println(minValue(-5, 6));
+//    }
 
     public static int maxValue(final int first, final int second) {
         if (first >= second) {
