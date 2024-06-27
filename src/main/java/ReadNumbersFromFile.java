@@ -9,8 +9,9 @@ public class ReadNumbersFromFile {
 
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        double median = 0; // ??????????
+//        double median = 0; // ??????????
         int count = 0;
+        double avg = 0;
 
         // Declaring two min heap
         PriorityQueue<Double> greaterValues = new PriorityQueue<>();
@@ -67,6 +68,12 @@ public class ReadNumbersFromFile {
 
                         // MEDIAN //
 
+                        // Average (prev_avg*n + x)/(n+1)
+
+                        avg = (avg * count + number) / (count + 1);
+
+                        // Average //
+
 
                     } catch (NumberFormatException e) {
                         // Handle the case where the token is not a valid integer
@@ -82,6 +89,7 @@ public class ReadNumbersFromFile {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
+        double median;
         // MEDIAN
         if (greaterValues.size() != smallerValues.size()) {
             median = -1.0 * smallerValues.peek();
@@ -94,6 +102,8 @@ public class ReadNumbersFromFile {
         System.out.println("Max: " + max);
         System.out.println("Min: " + min);
         System.out.println("Median: " + median);
+        System.out.println("Average: " + avg);
+
 
         System.out.println( "It took " + (finish - start) / 1000 + " seconds");
 
