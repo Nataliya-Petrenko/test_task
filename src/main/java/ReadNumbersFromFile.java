@@ -5,19 +5,34 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+// https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+
 
 // reading 17 s
 // 1-4 <30s
 
-//It took 26 seconds
+//It took 26 seconds with sout numbers
 
-public class ReadNumbersFromFile {
+/*
+Max: 49999978
+Min: -49999996
+Median: 25216.0
+Average: 7364.4177062000945
+
+increasingNumbersMax: [-48190694, -47725447, -43038241, -20190291, -17190728, -6172572, 8475960, 25205909, 48332507, 48676185]
+countIncreasingNumbersMax: 10
+decreasingNumbersMax: [47689379, 42381213, 30043880, 12102356, -4774057, -5157723, -11217378, -23005285, -23016933, -39209115, -49148762]
+countDecreasingNumbersMax: 11
+
+It took 9 seconds
+ */
+
+public class ReadNumbersFromFile { // todo Optional for possible Null
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
 
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        double median;
         int count = 0;
         double avg = 0;
 
@@ -55,44 +70,14 @@ public class ReadNumbersFromFile {
                         count++;
 
                         // MAX and MIN VALUE
-
-//                        if (count == 1) {
-//                            max = number;
-//                            min = number;
-//                        } else {
-//                            if (max < number) {
-//                                max = number;
-//                            }
-//                            if (min > number) {
-//                                min = number;
-//                            }
-//                        }
-
                         max = maxNumber(count, number, max);
                         min = minNumber(count, number, min);
 
-                        // MAX and MIN VALUE //
+                        // MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+                        sortingNumbersForMedian(smallerValues, greaterValues, number);
 
-                        // MEDIAN
-                        // https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
-
-                        // Negation for treating it as max heap
-                        smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.
-                        greaterValues.add(-1.0 * smallerValues.poll()); // Move the largest element
-                        // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
-                        if (greaterValues.size() > smallerValues.size()) { // Balance the heaps:
-                            // if g has more elements than s, move the smallest element from g back to s.
-                            smallerValues.add(-1.0 * greaterValues.poll());
-                        }
-
-                        // MEDIAN //
-
-                        // Average (prev_avg*n + x)/(n+1)
-                        // https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
-
+                        // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
                         avg = (avg * count + number) / (count + 1);
-
-                        // Average //
 
                         // sequence of numbers
 
@@ -159,11 +144,7 @@ public class ReadNumbersFromFile {
         }
 
         // MEDIAN
-        if (greaterValues.size() != smallerValues.size()) {
-            median = -1.0 * smallerValues.peek();
-        } else {
-            median = (greaterValues.peek() - smallerValues.peek()) / 2;
-        }
+        double median = median(smallerValues, greaterValues);
         // MEDIAN //
 
         long finish = System.currentTimeMillis();
@@ -181,19 +162,6 @@ public class ReadNumbersFromFile {
         System.out.println( "It took " + (finish - start) / 1000 + " seconds");
 
     }
-    /*
-                            if (count == 1) {
-                            max = number;
-                            min = number;
-                        } else {
-                            if (max < number) {
-                                max = number;
-                            }
-                            if (min > number) {
-                                min = number;
-                            }
-                        }
-     */
 
     public static int maxNumber(final int count, final int number, final int max) {
         if (count == 1) {
@@ -214,6 +182,32 @@ public class ReadNumbersFromFile {
                 return number;
             }
             return min;
+        }
+    }
+
+    public static void sortingNumbersForMedian(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues, final int number) { // todo PriorityQueue by this?
+        smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.  // Negation for treating it as max heap
+        greaterValues.add(-1.0 * smallerValues.poll()); // Move the largest element
+        // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
+        if (greaterValues.size() > smallerValues.size()) { // Balance the heaps:
+            // if g has more elements than s, move the smallest element from g back to s.
+            smallerValues.add(-1.0 * greaterValues.poll());
+        }
+    }
+
+    /*
+            if (greaterValues.size() != smallerValues.size()) {
+            median = -1.0 * smallerValues.peek();
+        } else {
+            median = (greaterValues.peek() - smallerValues.peek()) / 2;
+        }
+     */
+
+    public static double median(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues) {
+        if (greaterValues.size() != smallerValues.size()) {
+            return -1.0 * smallerValues.peek();
+        } else {
+            return  (greaterValues.peek() - smallerValues.peek()) / 2;
         }
     }
 }
