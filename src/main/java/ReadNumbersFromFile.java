@@ -39,13 +39,9 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         PriorityQueue<Double> greaterValues = new PriorityQueue<>();
         PriorityQueue<Double> smallerValues = new PriorityQueue<>();
 
-//        int countIncreasingNumbers = 0;
-//        int countDecreasingNumbers = 0;
         List<Integer> increasingNumbers = new ArrayList<>();
         List<Integer> decreasingNumbers = new ArrayList<>();
 
-//        int countIncreasingNumbersMax = 0;
-//        int countDecreasingNumbersMax = 0;
         List<Integer> increasingNumbersMax = new ArrayList<>();
         List<Integer> decreasingNumbersMax = new ArrayList<>();
 
@@ -56,28 +52,17 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
             while ((line = reader.readLine()) != null) {
                 int number;
-                // Split the line into tokens based on whitespace
-                String[] tokens = line.split("\\s+");
+
+                String[] tokens = line.split("\\s+"); // Split the line into tokens based on whitespace
                 for (String token : tokens) {
 
                     try {
-                        // Parse the token as an integer
-                        number = Integer.parseInt(token);
-                        // Print the number (or process it as needed)
-//                        System.out.println(number);
-
-
-                        count++;
-
-                        // MAX and MIN VALUE
-                        max = maxNumber(count, number, max);
-                        min = minNumber(count, number, min);
-
-                        // MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
-                        sortingNumbersForMedian(smallerValues, greaterValues, number);
-
-                        // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
-                        avg = (avg * count + number) / (count + 1);
+                        number = Integer.parseInt(token); // Parse the token as an integer
+                        count++; // for avg
+                        max = maxNumber(count, number, max); // MAX and MIN VALUE
+                        min = minNumber(count, number, min); // MAX and MIN VALUE
+                        sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+                        avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
 
                         // sequence of numbers
                         // for increasing
@@ -92,22 +77,19 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
                                 increasingNumbers = updateIncreasingNumbers(number);
                             }
                         }
-
                         // for decreasing
                         if (count == 1) {
                             decreasingNumbers.add(number);
                             decreasingNumbersMax = List.copyOf(decreasingNumbers);
                         } else {
-                            if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) { // todo якщо це останнє число то перевірити цей масив на максимальний
+                            if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) {
                                 decreasingNumbers.add(number);
                             } else {
                                 decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
                                 decreasingNumbers = updateDecreasingNumbers(number);
                             }
                         }
-
                         // sequence of numbers //
-
 
                     } catch (NumberFormatException e) {
                         // Handle the case where the token is not a valid integer
@@ -125,7 +107,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         double median = median(smallerValues, greaterValues);
         // MEDIAN //
 
-        increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number?
+        increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
         decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
 
         long finish = System.currentTimeMillis();
