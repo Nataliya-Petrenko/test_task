@@ -1,23 +1,35 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 // reading 17 s
+// 1-4 <30s
 public class ReadNumbersFromFile {
     public static void main(String[] args) {
+        long start = System.currentTimeMillis();
 
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-//        double median = 0; // ??????????
+        double median;
         int count = 0;
         double avg = 0;
 
-        // Declaring two min heap
         PriorityQueue<Double> greaterValues = new PriorityQueue<>();
         PriorityQueue<Double> smallerValues = new PriorityQueue<>();
 
-        long start = System.currentTimeMillis();
+        int countIncreasingNumbers = 0;
+        int countDecreasingNumbers = 0;
+        List<Integer> increasingNumbers = new ArrayList<>();
+        List<Integer> decreasingNumbers = new ArrayList<>();
+
+        int countIncreasingNumbersMax = 0;
+        int countDecreasingNumbersMax = 0;
+        List<Integer> increasingNumbersMax = new ArrayList<>();
+        List<Integer> decreasingNumbersMax = new ArrayList<>();
 
         String filePath = "src/main/resources/10m.txt";
 
@@ -56,6 +68,7 @@ public class ReadNumbersFromFile {
                         // MAX and MIN VALUE //
 
                         // MEDIAN
+                        // https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
 
                         // Negation for treating it as max heap
                         smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.
@@ -69,10 +82,62 @@ public class ReadNumbersFromFile {
                         // MEDIAN //
 
                         // Average (prev_avg*n + x)/(n+1)
+                        // https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
 
                         avg = (avg * count + number) / (count + 1);
 
                         // Average //
+
+                        // sequence of numbers
+
+                        if (count == 1) {
+
+                            // for increasing
+                            increasingNumbers.add(number);
+                            countIncreasingNumbers++;
+                            increasingNumbersMax = List.copyOf(increasingNumbers);
+                            countIncreasingNumbersMax = 1;
+
+                            // for decreasing
+                            decreasingNumbers.add(number);
+                            countDecreasingNumbers++;
+                            decreasingNumbersMax = List.copyOf(decreasingNumbers);
+                            countDecreasingNumbersMax = 1;
+                        } else {
+                            // for increasing
+                            if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
+                                increasingNumbers.add(number);
+                                countIncreasingNumbers++;
+                            } else {
+                                if (countIncreasingNumbers > countIncreasingNumbersMax) { // is new sequence of numbers longer?
+                                    increasingNumbersMax = new ArrayList<>();                         // clear old max sequence
+                                    increasingNumbersMax = List.copyOf(increasingNumbers); // assign new max sequence
+                                    countIncreasingNumbersMax = countIncreasingNumbers;    // assign new max count
+                                }
+                                increasingNumbers = new ArrayList<>();         // clear current sequence
+                                increasingNumbers.add(number);    // add current into new current sequence
+                                countIncreasingNumbers = 1;       // start new current count
+                            }
+
+                            // for decreasing
+
+                            if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) { // todo якщо це останнє число то перевірити цей масив на максимальний
+                                decreasingNumbers.add(number);
+                                countDecreasingNumbers++;
+                            } else {
+                                if (countDecreasingNumbers > countDecreasingNumbersMax) { // is new sequence of numbers longer?
+                                    decreasingNumbersMax = new ArrayList<>();                         // clear old max sequence
+                                    decreasingNumbersMax = List.copyOf(decreasingNumbers); // assign new max sequence
+                                    countDecreasingNumbersMax = countDecreasingNumbers;    // assign new max count
+                                }
+                                decreasingNumbers = new ArrayList<>();         // clear current sequence
+                                decreasingNumbers.add(number);    // add current into new current sequence
+                                countDecreasingNumbers = 1;       // start new current count
+                            }
+
+                        }
+
+                        // sequence of numbers //
 
 
                     } catch (NumberFormatException e) {
@@ -81,15 +146,12 @@ public class ReadNumbersFromFile {
                     }
 
 
-
-
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        double median;
         // MEDIAN
         if (greaterValues.size() != smallerValues.size()) {
             median = -1.0 * smallerValues.peek();
@@ -99,12 +161,17 @@ public class ReadNumbersFromFile {
         // MEDIAN //
 
         long finish = System.currentTimeMillis();
+        System.out.println();
         System.out.println("Max: " + max);
         System.out.println("Min: " + min);
         System.out.println("Median: " + median);
         System.out.println("Average: " + avg);
-
-
+        System.out.println();
+        System.out.println("increasingNumbersMax: " + increasingNumbersMax);
+        System.out.println("countIncreasingNumbersMax: " + countIncreasingNumbersMax);
+        System.out.println("decreasingNumbersMax: " + decreasingNumbersMax);
+        System.out.println("countDecreasingNumbersMax: " + countDecreasingNumbersMax);
+        System.out.println();
         System.out.println( "It took " + (finish - start) / 1000 + " seconds");
 
     }
