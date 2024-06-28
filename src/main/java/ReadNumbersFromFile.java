@@ -39,13 +39,13 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         PriorityQueue<Double> greaterValues = new PriorityQueue<>();
         PriorityQueue<Double> smallerValues = new PriorityQueue<>();
 
-        int countIncreasingNumbers = 0;
-        int countDecreasingNumbers = 0;
+//        int countIncreasingNumbers = 0;
+//        int countDecreasingNumbers = 0;
         List<Integer> increasingNumbers = new ArrayList<>();
         List<Integer> decreasingNumbers = new ArrayList<>();
 
-        int countIncreasingNumbersMax = 0;
-        int countDecreasingNumbersMax = 0;
+//        int countIncreasingNumbersMax = 0;
+//        int countDecreasingNumbersMax = 0;
         List<Integer> increasingNumbersMax = new ArrayList<>();
         List<Integer> decreasingNumbersMax = new ArrayList<>();
 
@@ -80,52 +80,30 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
                         avg = (avg * count + number) / (count + 1);
 
                         // sequence of numbers
-
+                        // for increasing
                         if (count == 1) {
-
-                            // for increasing
                             increasingNumbers.add(number);
-                            countIncreasingNumbers++;
-                            increasingNumbersMax = List.copyOf(increasingNumbers);
-                            countIncreasingNumbersMax = 1;
-
-                            // for decreasing
-                            decreasingNumbers.add(number);
-                            countDecreasingNumbers++;
-                            decreasingNumbersMax = List.copyOf(decreasingNumbers);
-                            countDecreasingNumbersMax = 1;
+                            increasingNumbersMax.add(number);
                         } else {
-                            // for increasing
                             if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
                                 increasingNumbers.add(number);
-                                countIncreasingNumbers++;
                             } else {
-                                if (countIncreasingNumbers > countIncreasingNumbersMax) { // is new sequence of numbers longer?
-                                    increasingNumbersMax = new ArrayList<>();                         // clear old max sequence
-                                    increasingNumbersMax = List.copyOf(increasingNumbers); // assign new max sequence
-                                    countIncreasingNumbersMax = countIncreasingNumbers;    // assign new max count
-                                }
-                                increasingNumbers = new ArrayList<>();         // clear current sequence
-                                increasingNumbers.add(number);    // add current into new current sequence
-                                countIncreasingNumbers = 1;       // start new current count
+                                increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
+                                increasingNumbers = updateIncreasingNumbers(number);
                             }
+                        }
 
-                            // for decreasing
-
+                        // for decreasing
+                        if (count == 1) {
+                            decreasingNumbers.add(number);
+                            decreasingNumbersMax = List.copyOf(decreasingNumbers);
+                        } else {
                             if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) { // todo якщо це останнє число то перевірити цей масив на максимальний
                                 decreasingNumbers.add(number);
-                                countDecreasingNumbers++;
                             } else {
-                                if (countDecreasingNumbers > countDecreasingNumbersMax) { // is new sequence of numbers longer?
-                                    decreasingNumbersMax = new ArrayList<>();                         // clear old max sequence
-                                    decreasingNumbersMax = List.copyOf(decreasingNumbers); // assign new max sequence
-                                    countDecreasingNumbersMax = countDecreasingNumbers;    // assign new max count
-                                }
-                                decreasingNumbers = new ArrayList<>();         // clear current sequence
-                                decreasingNumbers.add(number);    // add current into new current sequence
-                                countDecreasingNumbers = 1;       // start new current count
+                                decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+                                decreasingNumbers = updateDecreasingNumbers(number);
                             }
-
                         }
 
                         // sequence of numbers //
@@ -147,6 +125,9 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         double median = median(smallerValues, greaterValues);
         // MEDIAN //
 
+        increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number?
+        decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+
         long finish = System.currentTimeMillis();
         System.out.println();
         System.out.println("Max: " + max);
@@ -155,11 +136,11 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         System.out.println("Average: " + avg);
         System.out.println();
         System.out.println("increasingNumbersMax: " + increasingNumbersMax);
-        System.out.println("countIncreasingNumbersMax: " + countIncreasingNumbersMax);
+        System.out.println("countIncreasingNumbersMax: " + increasingNumbersMax.size());
         System.out.println("decreasingNumbersMax: " + decreasingNumbersMax);
-        System.out.println("countDecreasingNumbersMax: " + countDecreasingNumbersMax);
+        System.out.println("countDecreasingNumbersMax: " + decreasingNumbersMax.size());
         System.out.println();
-        System.out.println( "It took " + (finish - start) / 1000 + " seconds");
+        System.out.println("It took " + (finish - start) / 1000 + " seconds");
 
     }
 
@@ -207,8 +188,35 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         if (greaterValues.size() != smallerValues.size()) {
             return -1.0 * smallerValues.peek();
         } else {
-            return  (greaterValues.peek() - smallerValues.peek()) / 2;
+            return (greaterValues.peek() - smallerValues.peek()) / 2;
         }
     }
+
+    public static List<Integer> updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
+        if (increasingNumbers.size() > increasingNumbersMax.size()) { // is new sequence of numbers longer?
+            return List.copyOf(increasingNumbers); // assign new max sequence
+        }
+        return increasingNumbersMax;
+    }
+
+    public static List<Integer> updateIncreasingNumbers(int number) {
+        List<Integer> increasingNumbers = new ArrayList<>();         // clear current sequence
+        increasingNumbers.add(number);    // add current into new current sequence
+        return increasingNumbers;
+    }
+
+    public static List<Integer> updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
+        if (decreasingNumbers.size() > decreasingNumbersMax.size()) { // is new sequence of numbers longer?
+            return List.copyOf(decreasingNumbers); // assign new max sequence
+        }
+        return decreasingNumbersMax;
+    }
+
+    public static List<Integer> updateDecreasingNumbers(int number) {
+        List<Integer> decreasingNumbers = new ArrayList<>();         // clear current sequence
+        decreasingNumbers.add(number);    // add current into new current sequence
+        return decreasingNumbers;
+    }
+
 }
 
