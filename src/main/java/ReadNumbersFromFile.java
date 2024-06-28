@@ -8,6 +8,9 @@ import java.util.PriorityQueue;
 
 // reading 17 s
 // 1-4 <30s
+
+//It took 26 seconds
+
 public class ReadNumbersFromFile {
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -33,10 +36,10 @@ public class ReadNumbersFromFile {
 
         String filePath = "src/main/resources/10m.txt";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
 
-            while ((line = br.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 int number;
                 // Split the line into tokens based on whitespace
                 String[] tokens = line.split("\\s+");
@@ -46,24 +49,27 @@ public class ReadNumbersFromFile {
                         // Parse the token as an integer
                         number = Integer.parseInt(token);
                         // Print the number (or process it as needed)
-                        System.out.println(number);
+//                        System.out.println(number);
 
 
                         count++;
 
                         // MAX and MIN VALUE
 
-                        if (count == 1) {
-                            max = number;
-                            min = number;
-                        } else {
-                            if (max < number) {
-                                max = number;
-                            }
-                            if (min > number) {
-                                min = number;
-                            }
-                        }
+//                        if (count == 1) {
+//                            max = number;
+//                            min = number;
+//                        } else {
+//                            if (max < number) {
+//                                max = number;
+//                            }
+//                            if (min > number) {
+//                                min = number;
+//                            }
+//                        }
+
+                        max = maxNumber(count, number, max);
+                        min = minNumber(count, number, min);
 
                         // MAX and MIN VALUE //
 
@@ -174,6 +180,41 @@ public class ReadNumbersFromFile {
         System.out.println();
         System.out.println( "It took " + (finish - start) / 1000 + " seconds");
 
+    }
+    /*
+                            if (count == 1) {
+                            max = number;
+                            min = number;
+                        } else {
+                            if (max < number) {
+                                max = number;
+                            }
+                            if (min > number) {
+                                min = number;
+                            }
+                        }
+     */
+
+    public static int maxNumber(final int count, final int number, final int max) {
+        if (count == 1) {
+            return number;
+        } else {
+            if (max < number) {
+                return number;
+            }
+            return max;
+        }
+    }
+
+    public static int minNumber(final int count, final int number, final int min) {
+        if (count == 1) {
+            return number;
+        } else {
+            if (min > number) {
+                return number;
+            }
+            return min;
+        }
     }
 }
 
