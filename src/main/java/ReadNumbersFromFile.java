@@ -6,11 +6,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 // https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
 
-
-// reading 17 s
-// 1-4 <30s
-
-//It took 26 seconds with sout numbers
+// todo Warning! Only the first number in the line is read. If there are several numbers in one line, all but the first one will be ignored.
 
 /*
 Max: 49999978
@@ -66,28 +62,28 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
             String line;
 
             while ((line = reader.readLine()) != null) {
-                int number;
+                int number = 0;
 
-                String[] tokens = line.split("\\s+"); // Split the line into tokens based on whitespace
-                for (String token : tokens) {
+//                String[] tokens = line.split("\\s+"); // Split the line into tokens based on whitespace // todo if line includes several numbers each tokens instead of line
+//                for (String token : tokens) {
+//
+//                }
 
-                    try {
-                        number = Integer.parseInt(token); // Parse the token as an integer
-
-                        count++; // for avg
-                        max = maxNumber(count, number, max); // MAX and MIN VALUE
-                        min = minNumber(count, number, min); // MAX and MIN VALUE
-                        sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
-                        avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
-
-                        increasingNumbersSequence(number);
-                        decreasingNumbersSequence(number);
-
-                    } catch (NumberFormatException e) {
-                        // Handle the case where the token is not a valid integer
-                        System.out.println("Invalid number: " + token);
-                    }
+                try {
+                    number = Integer.parseInt(line); // Parse the token as an integer
+                } catch (NumberFormatException e) {
+                    // Handle the case where the token is not a valid integer
+                    System.out.println("Invalid number: " + line);
                 }
+
+                count++; // for avg
+                max = maxNumber(count, number, max); // MAX and MIN VALUE
+                min = minNumber(count, number, min); // MAX and MIN VALUE
+                sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+                avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
+
+                increasingNumbersSequence(number);
+                decreasingNumbersSequence(number);
             }
         } catch (IOException e) {
             System.out.println("Error reading the file: " + e.getMessage());
