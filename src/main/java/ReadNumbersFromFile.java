@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 // https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
@@ -74,57 +73,30 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
                     try {
                         number = Integer.parseInt(token); // Parse the token as an integer
-                        this.count++; // for avg
+
+                        count++; // for avg
                         max = maxNumber(count, number, max); // MAX and MIN VALUE
                         min = minNumber(count, number, min); // MAX and MIN VALUE
                         sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
                         avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
 
-                        // sequence of numbers
-                        // for increasing
-                        if (count == 1) {
-                            increasingNumbers.add(number);
-                            increasingNumbersMax.add(number);
-                        } else {
-                            if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
-                                increasingNumbers.add(number);
-                            } else {
-                                increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
-                                increasingNumbers = updateIncreasingNumbers(number);
-                            }
-                        }
-                        // for decreasing
-                        if (count == 1) {
-                            decreasingNumbers.add(number);
-                            decreasingNumbersMax = List.copyOf(decreasingNumbers);
-                        } else {
-                            if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) {
-                                decreasingNumbers.add(number);
-                            } else {
-                                decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
-                                decreasingNumbers = updateDecreasingNumbers(number);
-                            }
-                        }
-                        // sequence of numbers //
+                        increasingNumbersSequence(number);
+                        decreasingNumbersSequence(number);
 
                     } catch (NumberFormatException e) {
                         // Handle the case where the token is not a valid integer
                         System.out.println("Invalid number: " + token);
                     }
-
-
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        // MEDIAN
-        double median = median(smallerValues, greaterValues);
-        // MEDIAN //
+        double median = median(smallerValues, greaterValues); // MEDIAN
 
-        increasingNumbersMax = updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
-        decreasingNumbersMax = updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+        updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
+        updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
 
         long finish = System.currentTimeMillis();
         System.out.println();
@@ -174,14 +146,6 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
     }
 
-    /*
-            if (greaterValues.size() != smallerValues.size()) {
-            median = -1.0 * smallerValues.peek();
-        } else {
-            median = (greaterValues.peek() - smallerValues.peek()) / 2;
-        }
-     */
-
     public double median(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues) {
         if (greaterValues.size() != smallerValues.size()) {
             return -1.0 * smallerValues.peek();
@@ -190,31 +154,56 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
     }
 
-    public List<Integer> updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
+    public void updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
         if (increasingNumbers.size() > increasingNumbersMax.size()) { // is new sequence of numbers longer?
-            return List.copyOf(increasingNumbers); // assign new max sequence
+            this.increasingNumbersMax = new ArrayList<>();
+            this.increasingNumbersMax = List.copyOf(increasingNumbers); // assign new max sequence
         }
-        return increasingNumbersMax;
     }
 
-    public List<Integer> updateIncreasingNumbers(int number) {
-        List<Integer> increasingNumbers = new ArrayList<>();         // clear current sequence
-        increasingNumbers.add(number);    // add current into new current sequence
-        return increasingNumbers;
+    public void updateIncreasingNumbers(int number) {
+        this.increasingNumbers = new ArrayList<>();         // clear current sequence
+        this.increasingNumbers.add(number);    // add current into new current sequence
     }
 
-    public List<Integer> updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
+    public void updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
         if (decreasingNumbers.size() > decreasingNumbersMax.size()) { // is new sequence of numbers longer?
-            return List.copyOf(decreasingNumbers); // assign new max sequence
+            this.decreasingNumbersMax = new ArrayList<>();
+            this.decreasingNumbersMax = List.copyOf(decreasingNumbers); // assign new max sequence
         }
-        return decreasingNumbersMax;
     }
 
-    public List<Integer> updateDecreasingNumbers(int number) {
-        List<Integer> decreasingNumbers = new ArrayList<>();         // clear current sequence
-        decreasingNumbers.add(number);    // add current into new current sequence
-        return decreasingNumbers;
+    public void updateDecreasingNumbers(int number) {
+        this.decreasingNumbers = new ArrayList<>();         // clear current sequence
+        this.decreasingNumbers.add(number);    // add current into new current sequence
     }
 
+    private void increasingNumbersSequence(int number) {
+        if (count == 1) {
+            increasingNumbers.add(number);
+            increasingNumbersMax.add(number);
+        } else {
+            if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
+                increasingNumbers.add(number);
+            } else {  // todo if delete else then we can not to do check after while
+                updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
+                updateIncreasingNumbers(number);
+            }
+        }
+    }
+
+    private void decreasingNumbersSequence(int number) {
+        if (count == 1) {
+            decreasingNumbers.add(number);
+            decreasingNumbersMax = List.copyOf(decreasingNumbers);
+        } else {
+            if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) {
+                decreasingNumbers.add(number);
+            } else { //todo if delete else then we can not to do check after while
+                updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+                updateDecreasingNumbers(number);
+            }
+        }
+    }
 }
 
