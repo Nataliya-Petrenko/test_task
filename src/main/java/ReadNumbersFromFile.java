@@ -20,7 +20,7 @@ countIncreasingNumbersMax: 10
 decreasingNumbersMax: [47689379, 42381213, 30043880, 12102356, -4774057, -5157723, -11217378, -23005285, -23016933, -39209115, -49148762]
 countDecreasingNumbersMax: 11
 
-It took 9 seconds
+It took 7 seconds
  */
 
 public class ReadNumbersFromFile { // todo Optional for possible Null
@@ -72,8 +72,11 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
                     System.out.println("Invalid number: " + line);
                 }
 
-                max = maxNumber(count, number, max); // MAX and MIN VALUE
-                min = minNumber(count, number, min); // MAX and MIN VALUE
+//                max = maxNumber(count, number, max); // MAX and MIN VALUE
+//                min = minNumber(count, number, min); // MAX and MIN VALUE
+                max = Math.max(max, number);
+                min = Math.min(min, number);
+
                 sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
                 count++; // for avg
                 avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
@@ -109,27 +112,19 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
     }
 
-    private int maxNumber(final int count, final int number, final int max) {
-        if (count == 1) {
-            return number;
-        } else {
-            if (max < number) {
-                return number;
-            }
-            return max;
-        }
-    }
-
-    private int minNumber(final int count, final int number, final int min) {
-        if (count == 1) {
-            return number;
-        } else {
-            if (min > number) {
-                return number;
-            }
-            return min;
-        }
-    }
+//    private int maxNumber(final int number, final int max) {
+//            if (max < number) {
+//                return number;
+//            }
+//            return max;
+//    }
+//
+//    private int minNumber(final int number, final int min) {
+//            if (min > number) {
+//                return number;
+//            }
+//            return min;
+//    }
 
     private void sortingNumbersForMedian(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues, final int number) { // todo PriorityQueue by this?
         smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.  // Negation for treating it as max heap
