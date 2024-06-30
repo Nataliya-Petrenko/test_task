@@ -28,24 +28,40 @@ It took 9 seconds
  */
 
 public class ReadNumbersFromFile { // todo Optional for possible Null
-    public static void main(String[] args) {
+
+    private int max;
+    private int min;
+    private int count;
+    private double avg;
+
+    private PriorityQueue<Double> greaterValues;
+    private PriorityQueue<Double> smallerValues ;
+
+    private List<Integer> increasingNumbers;
+    private List<Integer> decreasingNumbers;
+
+    private List<Integer> increasingNumbersMax;
+    private List<Integer> decreasingNumbersMax;
+
+    private String filePath;
+
+    public ReadNumbersFromFile(String filePath) {
+        this.max = Integer.MIN_VALUE;
+        this.min = Integer.MAX_VALUE;
+        this.count = 0;
+        this.avg = 0;
+        this.greaterValues = new PriorityQueue<>();
+        this.smallerValues = new PriorityQueue<>();
+        this.increasingNumbers = new ArrayList<>();
+        this.decreasingNumbers = new ArrayList<>();
+        this.increasingNumbersMax = new ArrayList<>();
+        this.decreasingNumbersMax = new ArrayList<>();
+        this.filePath = filePath;
+    }
+
+    public void readingFile() {
         long start = System.currentTimeMillis();
 
-        int max = Integer.MIN_VALUE;
-        int min = Integer.MAX_VALUE;
-        int count = 0;
-        double avg = 0;
-
-        PriorityQueue<Double> greaterValues = new PriorityQueue<>();
-        PriorityQueue<Double> smallerValues = new PriorityQueue<>();
-
-        List<Integer> increasingNumbers = new ArrayList<>();
-        List<Integer> decreasingNumbers = new ArrayList<>();
-
-        List<Integer> increasingNumbersMax = new ArrayList<>();
-        List<Integer> decreasingNumbersMax = new ArrayList<>();
-
-        String filePath = "src/main/resources/10m.txt";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -58,7 +74,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
                     try {
                         number = Integer.parseInt(token); // Parse the token as an integer
-                        count++; // for avg
+                        this.count++; // for avg
                         max = maxNumber(count, number, max); // MAX and MIN VALUE
                         min = minNumber(count, number, min); // MAX and MIN VALUE
                         sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
@@ -126,7 +142,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
     }
 
-    public static int maxNumber(final int count, final int number, final int max) {
+    public int maxNumber(final int count, final int number, final int max) {
         if (count == 1) {
             return number;
         } else {
@@ -137,7 +153,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
     }
 
-    public static int minNumber(final int count, final int number, final int min) {
+    public int minNumber(final int count, final int number, final int min) {
         if (count == 1) {
             return number;
         } else {
@@ -148,7 +164,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
     }
 
-    public static void sortingNumbersForMedian(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues, final int number) { // todo PriorityQueue by this?
+    public void sortingNumbersForMedian(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues, final int number) { // todo PriorityQueue by this?
         smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.  // Negation for treating it as max heap
         greaterValues.add(-1.0 * smallerValues.poll()); // Move the largest element
         // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
@@ -166,7 +182,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
      */
 
-    public static double median(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues) {
+    public double median(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues) {
         if (greaterValues.size() != smallerValues.size()) {
             return -1.0 * smallerValues.peek();
         } else {
@@ -174,27 +190,27 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         }
     }
 
-    public static List<Integer> updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
+    public List<Integer> updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
         if (increasingNumbers.size() > increasingNumbersMax.size()) { // is new sequence of numbers longer?
             return List.copyOf(increasingNumbers); // assign new max sequence
         }
         return increasingNumbersMax;
     }
 
-    public static List<Integer> updateIncreasingNumbers(int number) {
+    public List<Integer> updateIncreasingNumbers(int number) {
         List<Integer> increasingNumbers = new ArrayList<>();         // clear current sequence
         increasingNumbers.add(number);    // add current into new current sequence
         return increasingNumbers;
     }
 
-    public static List<Integer> updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
+    public List<Integer> updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
         if (decreasingNumbers.size() > decreasingNumbersMax.size()) { // is new sequence of numbers longer?
             return List.copyOf(decreasingNumbers); // assign new max sequence
         }
         return decreasingNumbersMax;
     }
 
-    public static List<Integer> updateDecreasingNumbers(int number) {
+    public List<Integer> updateDecreasingNumbers(int number) {
         List<Integer> decreasingNumbers = new ArrayList<>();         // clear current sequence
         decreasingNumbers.add(number);    // add current into new current sequence
         return decreasingNumbers;
