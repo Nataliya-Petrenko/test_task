@@ -34,7 +34,7 @@ public class Menu {
 
     }
 
-    private boolean isValidFile(Path filePath) {
+    private boolean isValidFile(final Path filePath) {
         if (!isTxtFile(filePath)) {
             System.out.println("The file is not a *.txt file: " + filePath + "\n");
             return false;
@@ -50,11 +50,11 @@ public class Menu {
         return true;
     }
 
-    private boolean fileExists(Path filePath) {
+    private boolean fileExists(final Path filePath) {
         return Files.exists(filePath);
     }
 
-    private boolean isNonEmpty(Path filePath) {
+    private boolean isNonEmpty(final Path filePath) {
         try {
             return Files.size(filePath) > 0;
         } catch (IOException e) {
@@ -63,11 +63,12 @@ public class Menu {
         }
     }
 
-    private boolean isTxtFile(Path filePath) {
+    private boolean isTxtFile(final Path filePath) {
         return filePath.toString().endsWith(".txt");
     }
 
     private void showMenu() {
+        System.out.println("--------------------------------------------------------------------------------------\n");
         System.out.println("WARNING! " +
                 "Only *.txt files are supported.\n" +
                 "Each line must contain only one integer, lines that do not meet this criterion will be ignored.\n\n" +
@@ -76,7 +77,7 @@ public class Menu {
                 "Enter 0 to exit the program\n");
     }
 
-    public String readLineFromConsole() {
+    private String readLineFromConsole() {
         try {
             return READER.readLine();
         } catch (IOException e) {

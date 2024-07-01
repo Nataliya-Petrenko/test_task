@@ -48,7 +48,6 @@ public class FileProcessing {
     public void calculateStatistics() {
         long start = System.currentTimeMillis();
 
-
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
             String line;
             int number = 0;
@@ -62,7 +61,7 @@ public class FileProcessing {
 
                     sortingNumbersForMedian(number);
 
-                    count++; // for avg
+                    count++;
                     average = (average * (count - 1) + number) / count;
 
                     increasingNumbersSequence(number);
@@ -78,8 +77,8 @@ public class FileProcessing {
 
         median = median();
 
-        updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
-        updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+        updateIncreasingNumbersMax();
+        updateDecreasingNumbersMax();
 
         long finish = System.currentTimeMillis();
 
@@ -122,20 +121,20 @@ public class FileProcessing {
     }
 
     private void sortingNumbersForMedian(final int number) {
-        this.smallerValues.add(-1.0 * number);  // Negation for treating it as max heap
-        Double smallerValue = this.smallerValues.poll();
+        smallerValues.add(-1.0 * number);  // Negation for treating it as max heap
+        Double smallerValue = smallerValues.poll();
         if (smallerValue != null) {
-            this.greaterValues.add(-1.0 * smallerValue);  // Move the largest element
+            greaterValues.add(-1.0 * smallerValue);  // Move the largest element
         }  // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
-        if (this.greaterValues.size() > this.smallerValues.size()) { // Balance the heaps:
+        if (greaterValues.size() > smallerValues.size()) { // Balance the heaps:
             // if g has more elements than s, move the smallest element from g back to s.
-            this.smallerValues.add(-1.0 * this.greaterValues.poll());
+            smallerValues.add(-1.0 * greaterValues.poll());
         }
     }
 
     private double median() {
-        Double smallerValue = this.smallerValues.peek();
-        Double greaterValue = this.greaterValues.peek();
+        Double smallerValue = smallerValues.peek();
+        Double greaterValue = greaterValues.peek();
 
         if (this.greaterValues.size() != this.smallerValues.size()) {
             if (smallerValue != null) {
@@ -152,31 +151,31 @@ public class FileProcessing {
         }
     }
 
-    private void updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
+    private void updateIncreasingNumbersMax() {
         if (increasingNumbers.size() > increasingNumbersMax.size()) {
-            this.increasingNumbersMax = new ArrayList<>();
-            this.increasingNumbersMax = List.copyOf(increasingNumbers);
+            increasingNumbersMax = new ArrayList<>();
+            increasingNumbersMax = List.copyOf(increasingNumbers);
         }
     }
 
-    private void updateIncreasingNumbers(int number) {
-        this.increasingNumbers = new ArrayList<>();
-        this.increasingNumbers.add(number);
+    private void updateIncreasingNumbers(final int number) {
+        increasingNumbers = new ArrayList<>();
+        increasingNumbers.add(number);
     }
 
-    private void updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
+    private void updateDecreasingNumbersMax() {
         if (decreasingNumbers.size() > decreasingNumbersMax.size()) {
-            this.decreasingNumbersMax = new ArrayList<>();
-            this.decreasingNumbersMax = List.copyOf(decreasingNumbers);
+            decreasingNumbersMax = new ArrayList<>();
+            decreasingNumbersMax = List.copyOf(decreasingNumbers);
         }
     }
 
-    private void updateDecreasingNumbers(int number) {
-        this.decreasingNumbers = new ArrayList<>();
-        this.decreasingNumbers.add(number);
+    private void updateDecreasingNumbers(final int number) {
+        decreasingNumbers = new ArrayList<>();
+        decreasingNumbers.add(number);
     }
 
-    private void increasingNumbersSequence(int number) {
+    private void increasingNumbersSequence(final int number) {
         if (count == 1) {
             increasingNumbers.add(number);
             increasingNumbersMax.add(number);
@@ -184,13 +183,13 @@ public class FileProcessing {
             if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
                 increasingNumbers.add(number);
             } else {
-                updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
+                updateIncreasingNumbersMax();
                 updateIncreasingNumbers(number);
             }
         }
     }
 
-    private void decreasingNumbersSequence(int number) {
+    private void decreasingNumbersSequence(final int number) {
         if (count == 1) {
             decreasingNumbers.add(number);
             decreasingNumbersMax = List.copyOf(decreasingNumbers);
@@ -198,7 +197,7 @@ public class FileProcessing {
             if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) {
                 decreasingNumbers.add(number);
             } else {
-                updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
+                updateDecreasingNumbersMax();
                 updateDecreasingNumbers(number);
             }
         }
