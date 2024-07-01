@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class Menu {
     private static final BufferedReader READER = new BufferedReader(new InputStreamReader(System.in));
-    private static final Path DEFAULT_PATH = Path.of("src/main/resources/10m.txt");  // todo check getting file from resources after compiling
+    private static final Path DEFAULT_PATH = Path.of("src/main/resources/10m.txt");
 
     public Path readPathFromConsole() {
         String line;
@@ -20,11 +20,13 @@ public class Menu {
             }
             if (line.equals("1")) {
                 if (isValidFile(DEFAULT_PATH)) {
+                    System.out.println("Selected file: " + DEFAULT_PATH + "\n");
                     return DEFAULT_PATH;
                 }
             } else {
                 Path newPath = Path.of(line);
                 if (isValidFile(newPath)) {
+                    System.out.println("Selected file: " + newPath + "\n");
                     return newPath;
                 }
             }
