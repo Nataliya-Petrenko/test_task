@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class Menu {
     private static final BufferedReader READER = new BufferedReader(new InputStreamReader(System.in));
-    private static final Path DEFAULT_PATH = Path.of("src/main/resources/10m.txt");
+    private static final Path DEFAULT_PATH = Path.of("src/main/resources/10m.txt");  // todo check getting file from resources after compiling
 
     public Path readPathFromConsole() {
         String line;

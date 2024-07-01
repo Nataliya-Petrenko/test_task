@@ -85,25 +85,39 @@ public class FileProcessing {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        double median = median(); // MEDIAN
+        median(); // MEDIAN
 
         updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
         updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
 
         long finish = System.currentTimeMillis();
 
-        System.out.println("Max: " + max);
-        System.out.println("Min: " + min);
-        System.out.println("Median: " + median);
-        System.out.println("Average: " + avg);
-        System.out.println();
-        System.out.println("increasingNumbersMax: " + increasingNumbersMax);
-        System.out.println("countIncreasingNumbersMax: " + increasingNumbersMax.size());
-        System.out.println("decreasingNumbersMax: " + decreasingNumbersMax);
-        System.out.println("countDecreasingNumbersMax: " + decreasingNumbersMax.size());
-        System.out.println();
         System.out.println("It took " + (finish - start) / 1000 + " seconds\n");
 
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public double getAvg() {
+        return avg;
+    }
+
+    public double getMedian() {
+        return median();
+    }
+
+    public List<Integer> getIncreasingNumbersMax() {
+        return new ArrayList<>(increasingNumbersMax);
+    }
+
+    public List<Integer> getDecreasingNumbersMax() {
+        return new ArrayList<>(decreasingNumbersMax);
     }
 
     private void sortingNumbersForMedian(final int number) {
