@@ -72,14 +72,12 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
                     System.out.println("Invalid number: " + line);
                 }
 
-//                max = maxNumber(count, number, max); // MAX and MIN VALUE
-//                min = minNumber(count, number, min); // MAX and MIN VALUE
                 max = Math.max(max, number);
                 min = Math.min(min, number);
 
                 sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
                 count++; // for avg
-                avg = (avg * count + number) / (count + 1); // Average (prev_avg*n + x)/(n+1)  https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
+                avg = (avg * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
                 increasingNumbersSequence(number);
                 decreasingNumbersSequence(number);
             }
