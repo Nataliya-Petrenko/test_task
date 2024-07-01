@@ -63,8 +63,8 @@ public class Menu {
     }
 
     private void showMenu() {
-        System.out.println("Do you want get statistic from default file (10m.txt)? Enter 1\n" +
-                "Do you want get statistic from your file? Enter file path\n");
+        System.out.println("Do you want to get statistic from default file (10m.txt)? Enter 1\n" +
+                "Do you want to get statistic from your file? Enter file path\n");
     }
 
     public String readLineFromConsole() {

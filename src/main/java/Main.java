@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
 public class Main {
@@ -8,10 +7,10 @@ public class Main {
         while (true) {
             Menu menu = new Menu();
             path = menu.readPathFromConsole();
-            System.out.println("File selected: " + path.toString() + "\n");
+            System.out.println("Selected file: " + path.toString() + "\n");
 
-            ReadNumbersFromFile readNumbersFromFile = new ReadNumbersFromFile(path);
-            readNumbersFromFile.readingFile();
+            FileProcessing fileProcessing = new FileProcessing(path);
+            fileProcessing.readingFileAndShowStatistic();
         }
 
 

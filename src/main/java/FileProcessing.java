@@ -12,7 +12,7 @@ import java.util.PriorityQueue;
 Max: 49999978
 Min: -49999996
 Median: 25216.0
-Average: 7364.4177062000945
+Average: 7364.4177062000945   Average: 7364.418442642046  ?
 
 increasingNumbersMax: [-48190694, -47725447, -43038241, -20190291, -17190728, -6172572, 8475960, 25205909, 48332507, 48676185]
 countIncreasingNumbersMax: 10
@@ -22,7 +22,7 @@ countDecreasingNumbersMax: 11
 It took 7 seconds
  */
 
-public class ReadNumbersFromFile { // todo Optional for possible Null
+public class FileProcessing {
 
     private int max;
     private int min;
@@ -40,7 +40,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
 
     private final Path filePath;
 
-    public ReadNumbersFromFile(final Path filePath) {
+    public FileProcessing(final Path filePath) {
         this.max = Integer.MIN_VALUE;
         this.min = Integer.MAX_VALUE;
         this.count = 0;
@@ -54,7 +54,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         this.filePath = filePath;
     }
 
-    public void readingFile() {
+    public void readingFileAndShowStatistic() {
         long start = System.currentTimeMillis();
 
 
