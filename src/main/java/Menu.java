@@ -15,6 +15,9 @@ public class Menu {
         do {
             showMenu();
             line = readLineFromConsole();
+            if (line.equals("0")) {
+                System.exit(0);
+            }
             if (line.equals("1")) {
                 if (isValidFile(DEFAULT_PATH)) {
                     return DEFAULT_PATH;
@@ -64,7 +67,8 @@ public class Menu {
 
     private void showMenu() {
         System.out.println("Do you want to get statistic from default file (10m.txt)? Enter 1\n" +
-                "Do you want to get statistic from your file? Enter file path\n");
+                "Do you want to get statistic from your file? Enter file path\n" +
+                "Enter 0 to exit the program\n");
     }
 
     public String readLineFromConsole() {
