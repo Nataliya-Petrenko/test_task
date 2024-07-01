@@ -4,23 +4,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+
+// Algorithm for calculating the median of a stream of numbers from:
 // https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
 
-// todo Warning! Only the first number in the line is read. If there are several numbers in one line, all but the first one will be ignored.
-
-/*
-Max: 49999978
-Min: -49999996
-Median: 25216.0
-Average: 7364.4177062000945   Average: 7364.418442642046  ?
-
-increasingNumbersMax: [-48190694, -47725447, -43038241, -20190291, -17190728, -6172572, 8475960, 25205909, 48332507, 48676185]
-countIncreasingNumbersMax: 10
-decreasingNumbersMax: [47689379, 42381213, 30043880, 12102356, -4774057, -5157723, -11217378, -23005285, -23016933, -39209115, -49148762]
-countDecreasingNumbersMax: 11
-
-It took 7 seconds
- */
+// Formula for calculating the average value of a stream of numbers:
+// (prev_avg*n + x)/(n+1), where n from 0
+// https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
 
 public class FileProcessing {
 
@@ -66,14 +56,14 @@ public class FileProcessing {
             while ((line = reader.readLine()) != null) {
 
                 try {
-                    number = Integer.parseInt(line); // Parse the token as an integer
+                    number = Integer.parseInt(line);
                     max = Math.max(max, number);
                     min = Math.min(min, number);
 
-                    sortingNumbersForMedian(number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+                    sortingNumbersForMedian(number);
 
                     count++; // for avg
-                    average = (average * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
+                    average = (average * (count - 1) + number) / count;
 
                     increasingNumbersSequence(number);
                     decreasingNumbersSequence(number);
@@ -86,14 +76,14 @@ public class FileProcessing {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        median = median(); // MEDIAN
+        median = median();
 
-        updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
+        updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
         updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
 
         long finish = System.currentTimeMillis();
 
-        System.out.println("It took " + (finish - start) / 1000 + " seconds\n");
+        System.out.println("Statistics calculation took " + (finish - start) / 1000 + " seconds\n");
 
     }
 
@@ -163,27 +153,27 @@ public class FileProcessing {
     }
 
     private void updateIncreasingNumbersMax(List<Integer> increasingNumbersMax, List<Integer> increasingNumbers) {
-        if (increasingNumbers.size() > increasingNumbersMax.size()) { // is new sequence of numbers longer?
+        if (increasingNumbers.size() > increasingNumbersMax.size()) {
             this.increasingNumbersMax = new ArrayList<>();
-            this.increasingNumbersMax = List.copyOf(increasingNumbers); // assign new max sequence
+            this.increasingNumbersMax = List.copyOf(increasingNumbers);
         }
     }
 
     private void updateIncreasingNumbers(int number) {
-        this.increasingNumbers = new ArrayList<>();         // clear current sequence
-        this.increasingNumbers.add(number);    // add current into new current sequence
+        this.increasingNumbers = new ArrayList<>();
+        this.increasingNumbers.add(number);
     }
 
     private void updateDecreasingNumbersMax(List<Integer> decreasingNumbersMax, List<Integer> decreasingNumbers) {
-        if (decreasingNumbers.size() > decreasingNumbersMax.size()) { // is new sequence of numbers longer?
+        if (decreasingNumbers.size() > decreasingNumbersMax.size()) {
             this.decreasingNumbersMax = new ArrayList<>();
-            this.decreasingNumbersMax = List.copyOf(decreasingNumbers); // assign new max sequence
+            this.decreasingNumbersMax = List.copyOf(decreasingNumbers);
         }
     }
 
     private void updateDecreasingNumbers(int number) {
-        this.decreasingNumbers = new ArrayList<>();         // clear current sequence
-        this.decreasingNumbers.add(number);    // add current into new current sequence
+        this.decreasingNumbers = new ArrayList<>();
+        this.decreasingNumbers.add(number);
     }
 
     private void increasingNumbersSequence(int number) {
@@ -193,7 +183,7 @@ public class FileProcessing {
         } else {
             if (number > increasingNumbers.get(increasingNumbers.size() - 1)) {
                 increasingNumbers.add(number);
-            } else {  // todo if delete else then we can not to do check after while
+            } else {
                 updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);
                 updateIncreasingNumbers(number);
             }
@@ -207,7 +197,7 @@ public class FileProcessing {
         } else {
             if (number < decreasingNumbers.get(decreasingNumbers.size() - 1)) {
                 decreasingNumbers.add(number);
-            } else { //todo if delete else then we can not to do check after while
+            } else {
                 updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
                 updateDecreasingNumbers(number);
             }

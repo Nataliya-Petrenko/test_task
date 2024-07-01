@@ -66,7 +66,10 @@ public class Menu {
     }
 
     private void showMenu() {
-        System.out.println("Do you want to get statistic from default file (10m.txt)? Enter 1\n" +
+        System.out.println("WARNING! " +
+                "Only *.txt files are supported.\n" +
+                "Each line must contain only one integer, lines that do not meet this criterion will be ignored.\n\n" +
+                "Do you want to get statistic from default file (10m.txt)? Enter 1\n" +
                 "Do you want to get statistic from your file? Enter file path\n" +
                 "Enter 0 to exit the program\n");
     }
