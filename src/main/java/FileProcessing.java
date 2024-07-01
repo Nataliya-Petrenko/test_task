@@ -27,7 +27,8 @@ public class FileProcessing {
     private int max;
     private int min;
     private int count;
-    private double avg;
+    private double average;
+    private double median;
 
     private final PriorityQueue<Double> greaterValues;
     private final PriorityQueue<Double> smallerValues;
@@ -44,7 +45,7 @@ public class FileProcessing {
         this.max = Integer.MIN_VALUE;
         this.min = Integer.MAX_VALUE;
         this.count = 0;
-        this.avg = 0;
+        this.average = 0;
         this.greaterValues = new PriorityQueue<>();
         this.smallerValues = new PriorityQueue<>();
         this.increasingNumbers = new ArrayList<>();
@@ -54,7 +55,7 @@ public class FileProcessing {
         this.filePath = filePath;
     }
 
-    public void readingFileAndShowStatistic() {
+    public void calculateStatistics() {
         long start = System.currentTimeMillis();
 
 
@@ -72,7 +73,7 @@ public class FileProcessing {
                     sortingNumbersForMedian(number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
 
                     count++; // for avg
-                    avg = (avg * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
+                    average = (average * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
 
                     increasingNumbersSequence(number);
                     decreasingNumbersSequence(number);
@@ -85,7 +86,7 @@ public class FileProcessing {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        median(); // MEDIAN
+        median = median(); // MEDIAN
 
         updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
         updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
@@ -104,12 +105,12 @@ public class FileProcessing {
         return min;
     }
 
-    public double getAvg() {
-        return avg;
+    public double getMedian() {
+        return median;
     }
 
-    public double getMedian() {
-        return median();
+    public double getAverage() {
+        return average;
     }
 
     public List<Integer> getIncreasingNumbersMax() {
@@ -118,6 +119,16 @@ public class FileProcessing {
 
     public List<Integer> getDecreasingNumbersMax() {
         return new ArrayList<>(decreasingNumbersMax);
+    }
+
+    public void showStatistics() {
+        System.out.println("Max: " + max);
+        System.out.println("Min: " + min);
+        System.out.println("Median: " + median);
+        System.out.println("Average: " + average);
+        System.out.println("Longest increasing sequence: " + increasingNumbersMax);
+        System.out.println("Longest decreasing sequence: " + decreasingNumbersMax);
+        System.out.println();
     }
 
     private void sortingNumbersForMedian(final int number) {
