@@ -1,7 +1,6 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -31,7 +30,7 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
     private double avg;
 
     private final PriorityQueue<Double> greaterValues;
-    private final PriorityQueue<Double> smallerValues ;
+    private final PriorityQueue<Double> smallerValues;
 
     private List<Integer> increasingNumbers;
     private List<Integer> decreasingNumbers;
@@ -39,9 +38,9 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
     private List<Integer> increasingNumbersMax;
     private List<Integer> decreasingNumbersMax;
 
-    private final String filePath;
+    private final Path filePath;
 
-    public ReadNumbersFromFile(final String filePath) {
+    public ReadNumbersFromFile(final Path filePath) {
         this.max = Integer.MIN_VALUE;
         this.min = Integer.MAX_VALUE;
         this.count = 0;
@@ -55,47 +54,44 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         this.filePath = filePath;
     }
 
-    public void readingFile() throws FileNotFoundException {
+    public void readingFile() {
         long start = System.currentTimeMillis();
 
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = Files.newBufferedReader(filePath)) {
             String line;
+            int number = 0;
 
             while ((line = reader.readLine()) != null) {
-                int number = 0;
 
                 try {
                     number = Integer.parseInt(line); // Parse the token as an integer
+                    max = Math.max(max, number);
+                    min = Math.min(min, number);
+
+                    sortingNumbersForMedian(number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
+
+                    count++; // for avg
+                    avg = (avg * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
+
+                    increasingNumbersSequence(number);
+                    decreasingNumbersSequence(number);
+
                 } catch (NumberFormatException e) {
-                    // Handle the case where the token is not a valid integer
-                    System.out.println("Invalid number: " + line);
+                    System.out.println("Invalid line (will be skipped): " + line);
                 }
-
-                max = Math.max(max, number);
-                min = Math.min(min, number);
-
-                sortingNumbersForMedian(smallerValues, greaterValues, number); // for MEDIAN  https://www.geeksforgeeks.org/median-of-stream-of-integers-running-integers/
-                count++; // for avg
-                avg = (avg * (count - 1) + number) / count; // Average (prev_avg*n + x)/(n+1) where n from 0 https://www.geeksforgeeks.org/average-of-a-stream-of-numbers/
-                increasingNumbersSequence(number);
-                decreasingNumbersSequence(number);
             }
         } catch (IOException e) {
             System.out.println("Error reading the file: " + e.getMessage());
         }
 
-        if (count == 0) {
-            throw new FileNotFoundException("Empty file");
-        }
-
-        double median = median(smallerValues, greaterValues); // MEDIAN
+        double median = median(); // MEDIAN
 
         updateIncreasingNumbersMax(increasingNumbersMax, increasingNumbers);  // todo check with last number? (перевіряти, бо поточна послідовність перевіряється на макс кількість елементів тільки пілся того, як нове поточне число міняє напрямок, а додати перевірку чи є наступне число я не зрозуміла як
         updateDecreasingNumbersMax(decreasingNumbersMax, decreasingNumbers);
 
         long finish = System.currentTimeMillis();
-        System.out.println();
+
         System.out.println("Max: " + max);
         System.out.println("Min: " + min);
         System.out.println("Median: " + median);
@@ -106,39 +102,38 @@ public class ReadNumbersFromFile { // todo Optional for possible Null
         System.out.println("decreasingNumbersMax: " + decreasingNumbersMax);
         System.out.println("countDecreasingNumbersMax: " + decreasingNumbersMax.size());
         System.out.println();
-        System.out.println("It took " + (finish - start) / 1000 + " seconds");
+        System.out.println("It took " + (finish - start) / 1000 + " seconds\n");
 
     }
 
-//    private int maxNumber(final int number, final int max) {
-//            if (max < number) {
-//                return number;
-//            }
-//            return max;
-//    }
-//
-//    private int minNumber(final int number, final int min) {
-//            if (min > number) {
-//                return number;
-//            }
-//            return min;
-//    }
-
-    private void sortingNumbersForMedian(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues, final int number) { // todo PriorityQueue by this?
-        smallerValues.add(-1.0 * number); // Negate array[i] and add to s to simulate max-heap behavior.  // Negation for treating it as max heap
-        greaterValues.add(-1.0 * smallerValues.poll()); // Move the largest element
-        // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
-        if (greaterValues.size() > smallerValues.size()) { // Balance the heaps:
+    private void sortingNumbersForMedian(final int number) {
+        this.smallerValues.add(-1.0 * number);  // Negation for treating it as max heap
+        Double smallerValue = this.smallerValues.poll();
+        if (smallerValue != null) {
+            this.greaterValues.add(-1.0 * smallerValue);  // Move the largest element
+        }  // from s to g to keep s as a max-heap with the smaller half and g as a min-heap with the larger half.
+        if (this.greaterValues.size() > this.smallerValues.size()) { // Balance the heaps:
             // if g has more elements than s, move the smallest element from g back to s.
-            smallerValues.add(-1.0 * greaterValues.poll());
+            this.smallerValues.add(-1.0 * this.greaterValues.poll());
         }
     }
 
-    private double median(final PriorityQueue<Double> smallerValues, final PriorityQueue<Double> greaterValues) {
-        if (greaterValues.size() != smallerValues.size()) {
-            return -1.0 * smallerValues.peek();
+    private double median() {
+        Double smallerValue = this.smallerValues.peek();
+        Double greaterValue = this.greaterValues.peek();
+
+        if (this.greaterValues.size() != this.smallerValues.size()) {
+            if (smallerValue != null) {
+                return -1.0 * smallerValue;
+            } else {
+                throw new IllegalStateException("Expected smallerValues to have an element.");
+            }
         } else {
-            return (greaterValues.peek() - smallerValues.peek()) / 2;
+            if (smallerValue != null && greaterValue != null) {
+                return (greaterValue - smallerValue) / 2;
+            } else {
+                throw new IllegalStateException("Expected smallerValues and  greaterValues to have elements.");
+            }
         }
     }
 

@@ -3,22 +3,17 @@ import java.nio.file.Path;
 
 public class Main {
     public static void main(String[] args) {
+        Path path;
 
         while (true) {
             Menu menu = new Menu();
-            Path path = menu.readPathFromConsole();
+            path = menu.readPathFromConsole();
             System.out.println("File selected: " + path.toString() + "\n");
+
+            ReadNumbersFromFile readNumbersFromFile = new ReadNumbersFromFile(path);
+            readNumbersFromFile.readingFile();
         }
 
-
-
-//        String filePath = "src/main/resources/10m.txt";
-//        ReadNumbersFromFile readNumbersFromFile = new ReadNumbersFromFile(filePath);
-//        try {
-//            readNumbersFromFile.readingFile();
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException(e);  // todo ask about another file
-//        }
 
 
     }
